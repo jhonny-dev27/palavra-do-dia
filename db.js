@@ -40,11 +40,33 @@ async function obterPalavras() {
 window.addEventListener('load', async () => {
   const palavras = await obterPalavras();
   if (palavras.length === 0) {
+
     salvarPalavra({
       palavra: 'Resiliência',
       significado: 'Capacidade de se adaptar e superar adversidades.',
-      etimologia: 'Do latim resiliens, "voltar atrás, recuperar-se".',
+      etimologia: 'Do latim resiliens.',
       ingles: 'Resilience'
+    });
+
+    salvarPalavra({
+      palavra: 'Efêmero',
+      significado: 'Algo que dura pouco tempo.',
+      etimologia: 'Do grego ephémeros.',
+      ingles: 'Ephemeral'
+    });
+
+    salvarPalavra({
+      palavra: 'Plenitude',
+      significado: 'Estado de completude ou satisfação total.',
+      etimologia: 'Do latim plenitudo.',
+      ingles: 'Fulfillment'
+    });
+
+    salvarPalavra({
+      palavra: 'Sagacidade',
+      significado: 'Capacidade de compreender rapidamente.',
+      etimologia: 'Do latim sagax.',
+      ingles: 'Shrewdness'
     });
   }
 });
