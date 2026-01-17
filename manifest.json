@@ -1,13 +1,10 @@
 {
   "name": "Palavra do Dia",
   "short_name": "Palavra",
-  "description": "Aplicativo offline-first para aprendizado diário de palavras.",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#121212",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "./assets/icon-192.png",

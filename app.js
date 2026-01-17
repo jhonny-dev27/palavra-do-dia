@@ -1,40 +1,29 @@
-import { salvarPalavra, obterPalavras } from './db.js';
-
-const palavraEl = document.getElementById('palavra');
-const significadoEl = document.getElementById('significado');
-const etimologiaEl = document.getElementById('etimologia');
-const inglesEl = document.getElementById('ingles');
-const btnNovaPalavra = document.getElementById('nova-palavra');
-
-function escolherPalavraAleatoria(palavras) {
-  if (palavras.length === 0) return null;
-  const index = Math.floor(Math.random() * palavras.length);
-  return palavras[index];
-}
+const wordEl = document.getElementById('word');
+const meaningEl = document.getElementById('meaning');
+const etymologyEl = document.getElementById('etymology');
+const translationEl = document.getElementById('translation');
+const nextBtn = document.getElementById('next');
 
 async function mostrarNovaPalavra() {
   const palavras = await obterPalavras();
 
   if (palavras.length === 0) {
-    palavraEl.textContent = 'Nenhuma palavra salva';
-    significadoEl.textContent = '';
-    etimologiaEl.textContent = '';
-    inglesEl.textContent = '';
+    wordEl.textContent = 'Nenhuma palavra';
+    meaningEl.textContent = '';
+    etymologyEl.textContent = '';
+    translationEl.textContent = '';
     return;
   }
 
-  const palavra = escolherPalavraAleatoria(palavras);
+  const index = Math.floor(Math.random() * palavras.length);
+  const palavra = palavras[index];
 
-  palavraEl.textContent = palavra.palavra;
-  significadoEl.textContent = palavra.significado;
-  etimologiaEl.textContent = palavra.etimologia;
-  inglesEl.textContent = palavra.ingles;
+  wordEl.textContent = palavra.palavra;
+  meaningEl.textContent = palavra.significado;
+  etymologyEl.textContent = palavra.etimologia;
+  translationEl.textContent = palavra.ingles;
 }
 
-// EVENTO DO BOTÃO (IMPORTANTE)
-btnNovaPalavra.addEventListener('click', () => {
-  mostrarNovaPalavra();
-});
+nextBtn.addEventListener('click', mostrarNovaPalavra);
 
-// PRIMEIRA PALAVRA AO ABRIR
 mostrarNovaPalavra();

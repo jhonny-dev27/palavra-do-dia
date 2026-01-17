@@ -1,84 +1,50 @@
-/* =========================================
-   BANCO DE DADOS LOCAL - INDEXEDDB
-========================================= */
-
-const DB_NAME = "palavraDoDiaDB";
+const DB_NAME = 'PalavraDB';
 const DB_VERSION = 1;
-const STORE_NAME = "palavras";
+const STORE_NAME = 'palavras';
 
-let db = null;
-
-/* =========================================
-   ABRIR / CRIAR BANCO
-========================================= */
-function openDatabase() {
-  return new Promise((resolve, reject) => {
+function abrirDB() {
+  return new Promise((resolve) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      const database = event.target.result;
-
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME, {
-          keyPath: "word"
-        });
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
       }
     };
 
     request.onsuccess = (event) => {
-      db = event.target.result;
-      resolve(db);
-    };
-
-    request.onerror = () => {
-      reject("Erro ao abrir IndexedDB");
+      resolve(event.target.result);
     };
   });
 }
 
-/* =========================================
-   SALVAR PALAVRA
-========================================= */
-function saveWord(wordData) {
-  if (!db) return;
-
-  const transaction = db.transaction(STORE_NAME, "readwrite");
-  const store = transaction.objectStore(STORE_NAME);
-
-  store.put(wordData);
+async function salvarPalavra(palavra) {
+  const db = await abrirDB();
+  const tx = db.transaction(STORE_NAME, 'readwrite');
+  tx.objectStore(STORE_NAME).add(palavra);
 }
 
-/* =========================================
-   OBTER PALAVRA ALEATÓRIA
-========================================= */
-function getRandomWord() {
+async function obterPalavras() {
+  const db = await abrirDB();
+  const tx = db.transaction(STORE_NAME, 'readonly');
+  const store = tx.objectStore(STORE_NAME);
+
   return new Promise((resolve) => {
-    if (!db) {
-      resolve(null);
-      return;
-    }
-
-    const transaction = db.transaction(STORE_NAME, "readonly");
-    const store = transaction.objectStore(STORE_NAME);
     const request = store.getAll();
-
-    request.onsuccess = () => {
-      const words = request.result;
-      if (words.length === 0) {
-        resolve(null);
-      } else {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        resolve(words[randomIndex]);
-      }
-    };
-
-    request.onerror = () => resolve(null);
+    request.onsuccess = () => resolve(request.result);
   });
 }
 
-/* =========================================
-   INICIALIZAÇÃO AUTOMÁTICA
-========================================= */
-openDatabase().then(() => {
-  console.log("IndexedDB pronto");
+/* Palavra inicial (exemplo) */
+window.addEventListener('load', async () => {
+  const palavras = await obterPalavras();
+  if (palavras.length === 0) {
+    salvarPalavra({
+      palavra: 'Resiliência',
+      significado: 'Capacidade de se adaptar e superar adversidades.',
+      etimologia: 'Do latim resiliens, "voltar atrás, recuperar-se".',
+      ingles: 'Resilience'
+    });
+  }
 });
