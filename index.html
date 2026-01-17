@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Palavra do Dia</title>
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Estilo -->
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- Cor do app -->
+  <meta name="theme-color" content="#121212">
+
+</head>
+<body>
+
+  <header>
+    <h1>Palavra do Dia</h1>
+    <span id="status">Offline</span>
+  </header>
+
+  <main>
+    <section class="card">
+
+      <h2 id="word">---</h2>
+
+      <p><strong>Significado</strong></p>
+      <p id="meaning">Clique em "Nova Palavra"</p>
+
+      <p><strong>Etimologia</strong></p>
+      <p id="etymology">---</p>
+
+      <p><strong>Inglês</strong></p>
+      <p id="translation">---</p>
+
+    </section>
+
+    <button id="next">Nova Palavra</button>
+  </main>
+
+  <!-- Banco de dados local -->
+  <script src="./db.js"></script>
+
+  <!-- Lógica principal -->
+  <script src="./app.js"></script>
+
+  <!-- Registro do Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('./service-worker.js')
+          .then(() => console.log('Service Worker registrado'))
+          .catch(err => console.error('Erro no Service Worker:', err));
+      });
+    }
+  </script>
+
+</body>
+</html>
