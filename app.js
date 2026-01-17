@@ -1,83 +1,40 @@
-/* =========================================
-   ELEMENTOS DA INTERFACE
-========================================= */
-const statusEl = document.getElementById("status");
-const wordEl = document.getElementById("word");
-const meaningEl = document.getElementById("meaning");
-const etymologyEl = document.getElementById("etymology");
-const translationEl = document.getElementById("translation");
-const nextBtn = document.getElementById("next");
+import { salvarPalavra, obterPalavras } from './db.js';
 
-/* =========================================
-   STATUS ONLINE / OFFLINE
-========================================= */
-function updateConnectionStatus() {
-  if (navigator.onLine) {
-    statusEl.textContent = "Online";
-    statusEl.style.backgroundColor = "#2e7d32";
-    statusEl.style.color = "#ffffff";
-  } else {
-    statusEl.textContent = "Offline";
-    statusEl.style.backgroundColor = "#333333";
-    statusEl.style.color = "#cccccc";
-  }
+const palavraEl = document.getElementById('palavra');
+const significadoEl = document.getElementById('significado');
+const etimologiaEl = document.getElementById('etimologia');
+const inglesEl = document.getElementById('ingles');
+const btnNovaPalavra = document.getElementById('nova-palavra');
+
+function escolherPalavraAleatoria(palavras) {
+  if (palavras.length === 0) return null;
+  const index = Math.floor(Math.random() * palavras.length);
+  return palavras[index];
 }
 
-window.addEventListener("online", updateConnectionStatus);
-window.addEventListener("offline", updateConnectionStatus);
-updateConnectionStatus();
+async function mostrarNovaPalavra() {
+  const palavras = await obterPalavras();
 
-/* =========================================
-   RENDERIZAÇÃO
-========================================= */
-function renderWord(data) {
-  if (!data) {
-    wordEl.textContent = "---";
-    meaningEl.textContent = "Nenhuma palavra salva ainda.";
-    etymologyEl.textContent = "---";
-    translationEl.textContent = "---";
+  if (palavras.length === 0) {
+    palavraEl.textContent = 'Nenhuma palavra salva';
+    significadoEl.textContent = '';
+    etimologiaEl.textContent = '';
+    inglesEl.textContent = '';
     return;
   }
 
-  wordEl.textContent = data.word;
-  meaningEl.textContent = data.meaning;
-  etymologyEl.textContent = data.etymology;
-  translationEl.textContent = data.translation;
+  const palavra = escolherPalavraAleatoria(palavras);
+
+  palavraEl.textContent = palavra.palavra;
+  significadoEl.textContent = palavra.significado;
+  etimologiaEl.textContent = palavra.etimologia;
+  inglesEl.textContent = palavra.ingles;
 }
 
-/* =========================================
-   DADOS DE EXEMPLO (placeholder)
-   Depois pode ser substituído por API real
-========================================= */
-function generateOnlineWord() {
-  return {
-    word: "Exemplo",
-    meaning: "Algo que serve como modelo ou referência.",
-    etymology: "Do latim exemplum.",
-    translation: "Example"
-  };
-}
-
-/* =========================================
-   AÇÃO DO BOTÃO
-========================================= */
-nextBtn.addEventListener("click", async () => {
-  if (navigator.onLine) {
-    const wordData = generateOnlineWord();
-    saveWord(wordData);
-    renderWord(wordData);
-  } else {
-    const savedWord = await getRandomWord();
-    renderWord(savedWord);
-  }
+// EVENTO DO BOTÃO (IMPORTANTE)
+btnNovaPalavra.addEventListener('click', () => {
+  mostrarNovaPalavra();
 });
 
-/* =========================================
-   INICIALIZAÇÃO
-========================================= */
-(async function init() {
-  const savedWord = await getRandomWord();
-  if (savedWord) {
-    renderWord(savedWord);
-  }
-})();
+// PRIMEIRA PALAVRA AO ABRIR
+mostrarNovaPalavra();
